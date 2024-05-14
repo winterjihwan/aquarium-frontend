@@ -4,9 +4,8 @@ import React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Address, Hex, zeroAddress } from "viem";
 import { WebAuthn } from "../../libs/web-authn/service/web-authn";
-// import { saveUser } from "@/libs/factory";
-// import { getUser } from "@/libs/factory/getUser";
-// import { walletConnect } from "@/libs/wallet-connect/service/wallet-connect";
+import { saveUser } from "@/libs/factory";
+import { getUser } from "@/libs/factory/getUser";
 
 export type Me = {
   account: Address;
@@ -36,16 +35,16 @@ function useMeHook() {
       if (!credential) {
         return;
       }
-      // const user = await saveUser({
-      //   id: credential.rawId,
-      //   pubKey: credential.pubKey,
-      // });
+      const user = await saveUser({
+        id: credential.rawId,
+        pubKey: credential.pubKey,
+      });
 
-      // const me = {
-      //   keyId: user.id as Hex,
-      //   pubKey: user.pubKey,
-      //   account: user.account,
-      // };
+      const me = {
+        keyId: user.id as Hex,
+        pubKey: user.pubKey,
+        account: user.account,
+      };
 
       console.log("credential id", credential.rawId);
       console.log("credential pubKey", credential.pubKey);
@@ -56,7 +55,6 @@ function useMeHook() {
       }
       localStorage.setItem("aquarium-user", JSON.stringify(me));
       localStorage.setItem("aquarium-returning", "true");
-      // walletConnect.smartWalletAddress = me.account;
       setIsReturning(true);
       setMe(me);
     } catch (e) {
@@ -73,21 +71,20 @@ function useMeHook() {
       if (!credential) {
         return;
       }
-      // const user = await getUser(credential.rawId);
+      const user = await getUser(credential.rawId);
 
-      // if (user?.account === undefined || user?.account === zeroAddress) {
-      //   throw new Error("user not found");
-      // }
+      if (user?.account === undefined || user?.account === zeroAddress) {
+        throw new Error("user not found");
+      }
 
-      // const me = {
-      //   keyId: user.id as Hex,
-      //   pubKey: user.pubKey,
-      //   account: user.account,
-      // };
+      const me = {
+        keyId: user.id as Hex,
+        pubKey: user.pubKey,
+        account: user.account,
+      };
 
       localStorage.setItem("passkeys4337.me", JSON.stringify(me));
       localStorage.setItem("passkeys4337.returning", "true");
-      // walletConnect.smartWalletAddress = me.account;
       setIsReturning(true);
       setMe(me);
     } catch (e) {

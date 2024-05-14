@@ -1,32 +1,50 @@
-import { PUBLIC_CLIENT } from "@/constants/client";
-import { FACTORY_ABI } from "@/constants/factory";
-import { Hex, stringify, toHex } from "viem";
+import { ethers } from "ethers";
+import { abi as FACTORY_ABI } from "@/constants/artifacts/AccountFactory.json";
 
-export async function GET(_req: Request, { params }: { params: { id: Hex } }) {
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
+// Define the factory contract instance
+const AccountFactory = new ethers.Contract(
+  process.env.FACTORY__ADDRESS as string,
+  FACTORY_ABI,
+  provider
+);
+
+export async function GET(
+  _req: Request,
+  { params }: { params: { id: string } }
+) {
   const { id } = params;
   if (!id) {
-    return Response.json(JSON.parse(stringify({ error: "id is required" })));
+    return new Response(JSON.stringify({ error: "id is required" }), {
+      status: 400,
+    });
   }
 
-  const user = await PUBLIC_CLIENT.readContract({
-    address: process.env.NEXT_PUBLIC_FACTORY_CONTRACT_ADDRESS as Hex,
-    abi: FACTORY_ABI,
-    functionName: "getUser",
-    args: [BigInt(id)],
-  });
+  const userId = id; // Convert id to BigNumber
 
-  //const balance = await PUBLIC_CLIENT.getBalance({ address: user.account });
-  let balance = BigInt(0);
+  const user = await AccountFactory.getUser(userId);
 
-  // Using etherscan api instead of getBalance as Sepolia rcp node is not inconsistent
-  if (user?.account) {
-    const result = await fetch(
+  // Use ethers' provider.getBalance method instead of direct contract call
+  let balance = 0;
+
+  // Using Etherscan API to fetch balance as Sepolia RPC node may be inconsistent
+  if (user?.account && user.account !== ethers.ZeroAddress) {
+    const response = await fetch(
       `https://api-sepolia.etherscan.io/api?module=account&action=balance&address=${user.account}&tag=latest&apikey=${process.env.ETHERSCAN_API_KEY}`,
-      { cache: "no-store" },
+      { cache: "no-store" }
     );
-    const resultJSON = await result.json();
-    balance = BigInt(resultJSON?.result || 0);
+    const resultJSON = await response.json();
+    balance = resultJSON?.result || "0";
   }
 
-  return Response.json(JSON.parse(stringify({ ...user, id: toHex(user.id), balance })));
+  return new Response(
+    JSON.stringify({
+      ...user,
+      // id: userId.toHexString(),
+      id: userId,
+      balance: balance.toString(),
+    }),
+    { status: 200 }
+  );
 }

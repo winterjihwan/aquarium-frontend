@@ -2,27 +2,13 @@
 import { useMe } from "@/providers/MeProvider";
 import React, { useState } from "react";
 
-const YourComponent = () => {
+const LoginPage = () => {
   const [username, setUsername] = useState("");
   const { create, get, returning, isLoading } = useMe();
   const [createForm, setCreateForm] = useState(!returning);
 
   return (
     <div className="flex flex-col items-center justify-between w-full relative gap-8">
-      <div className="flex justify-between items-baseline w-full">
-        <button
-          onClick={() =>
-            window.open(
-              "https://github.com/passkeys-4337/smart-wallet",
-              "_blank"
-            )
-          }
-          className="bg-gray-200 hover:bg-gray-300 p-2 rounded"
-        >
-          Click me
-        </button>
-      </div>
-
       {!isLoading && (
         <form
           className="flex flex-col items-center w-full gap-4"
@@ -83,4 +69,4 @@ const YourComponent = () => {
   );
 };
 
-export default YourComponent;
+export default LoginPage;

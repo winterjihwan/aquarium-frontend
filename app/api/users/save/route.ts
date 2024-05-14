@@ -1,47 +1,41 @@
-import { CHAIN, PUBLIC_CLIENT, transport } from "@/constants";
-import { FACTORY_ABI } from "@/constants/factory";
-import { Hex, createWalletClient, toHex, zeroAddress } from "viem";
-import { privateKeyToAccount } from "viem/accounts";
+import { ethers } from "ethers";
+import { abi as FACTORY__ABI } from "@/constants/artifacts/AccountFactory.json";
+
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+
+const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider);
+
+// Define the factory contract instance
+const AccountFactory = new ethers.Contract(
+  process.env.FACTORY__ADDRESS as string,
+  FACTORY__ABI,
+  wallet
+);
 
 export async function POST(req: Request) {
-  const { id, pubKey } = (await req.json()) as { id: Hex; pubKey: [Hex, Hex] };
+  const { id, pubKey } = (await req.json()) as {
+    id: string;
+    pubKey: [string, string];
+  };
 
-  const account = privateKeyToAccount(process.env.RELAYER_PRIVATE_KEY as Hex);
-  const walletClient = createWalletClient({
-    account,
-    chain: CHAIN,
-    transport,
-  });
+  const user = await AccountFactory.getUser(id);
 
-  const user = await PUBLIC_CLIENT.readContract({
-    address: process.env.NEXT_PUBLIC_FACTORY_CONTRACT_ADDRESS as Hex,
-    abi: FACTORY_ABI,
-    functionName: "getUser",
-    args: [BigInt(id)],
-  });
-
-  if (user.account !== zeroAddress) {
+  if (user.account !== ethers.ZeroAddress) {
     return Response.json(undefined);
   }
 
-  await walletClient.writeContract({
-    address: process.env.NEXT_PUBLIC_FACTORY_CONTRACT_ADDRESS as Hex,
-    abi: FACTORY_ABI,
-    functionName: "saveUser",
-    args: [BigInt(id), pubKey],
-  });
+  const saveUserTx = await AccountFactory.saveUser(id, pubKey);
+  await saveUserTx.wait();
 
-  const smartWalletAddress = await PUBLIC_CLIENT.readContract({
-    address: process.env.NEXT_PUBLIC_FACTORY_CONTRACT_ADDRESS as Hex,
-    abi: FACTORY_ABI,
-    functionName: "getAddress",
-    args: [pubKey],
-  });
+  const smartWalletAddress = await AccountFactory.getCounterfactualAddress(
+    pubKey
+  );
 
-  await walletClient.sendTransaction({
+  const sendWeiTx = await wallet.sendTransaction({
     to: smartWalletAddress,
-    value: BigInt(1),
+    value: ethers.parseUnits("1", "wei"), // Adjust the value as needed
   });
+  await sendWeiTx.wait();
 
   const createdUser = {
     id,
