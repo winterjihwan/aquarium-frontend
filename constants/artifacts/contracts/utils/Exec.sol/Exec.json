@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Exec",
+  "sourceName": "contracts/utils/Exec.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212205d47afeb796e6cda406eed3bb22d6a9060b95aa8439fab9a6339c6546186a50e64736f6c63430008180033",
+  "deployedBytecode": "0x600080fdfea26469706673582212205d47afeb796e6cda406eed3bb22d6a9060b95aa8439fab9a6339c6546186a50e64736f6c63430008180033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

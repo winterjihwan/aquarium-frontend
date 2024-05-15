@@ -1,0 +1,10 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Base64URL",
+  "sourceName": "contracts/utils/Base64URL.sol",
+  "abi": [],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea26469706673582212208b3f1375feed9629c523c3d3b5e4e5eb006a927e1644fa5929f3d9073530b01664736f6c63430008180033",
+  "deployedBytecode": "0x600080fdfea26469706673582212208b3f1375feed9629c523c3d3b5e4e5eb006a927e1644fa5929f3d9073530b01664736f6c63430008180033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

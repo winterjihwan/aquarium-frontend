@@ -1,5 +1,5 @@
 import { ethers } from "ethers";
-import { abi as FACTORY__ABI } from "@/constants/artifacts/AccountFactory.json";
+import { abi as FACTORY__ABI } from "@/constants/artifacts/contracts/AccountFactory.sol/AccountFactory.json";
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 
@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   }
 
   const saveUserTx = await AccountFactory.saveUser(id, pubKey);
-  await saveUserTx.wait();
+  // await saveUserTx.wait();
 
   const smartWalletAddress = await AccountFactory.getCounterfactualAddress(
     pubKey
@@ -35,7 +35,7 @@ export async function POST(req: Request) {
     to: smartWalletAddress,
     value: ethers.parseUnits("1", "wei"), // Adjust the value as needed
   });
-  await sendWeiTx.wait();
+  // await sendWeiTx.wait();
 
   const createdUser = {
     id,

@@ -1,0 +1,72 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "NonceManager",
+  "sourceName": "contracts/NonceManager.sol",
+  "abi": [
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "internalType": "uint192",
+          "name": "key",
+          "type": "uint192"
+        }
+      ],
+      "name": "getNonce",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "nonce",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint192",
+          "name": "key",
+          "type": "uint192"
+        }
+      ],
+      "name": "incrementNonce",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        },
+        {
+          "internalType": "uint192",
+          "name": "",
+          "type": "uint192"
+        }
+      ],
+      "name": "nonceSequenceNumber",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ],
+  "bytecode": "0x6080806040523461001657610256908161001c8239f35b600080fdfe604060808152600436101561001357600080fd5b600090813560e01c80630bd28e3b1461011c5780631b2e01b8146100c2576335567e1a1461004057600080fd5b346100be5773ffffffffffffffffffffffffffffffffffffffff7fffffffffffffffffffffffffffffffffffffffffffffffff000000000000000082602094610088366101c7565b9416815280865281812077ffffffffffffffffffffffffffffffffffffffffffffffff8516825286522054918351931b16178152f35b5080fd5b50346100be578060209273ffffffffffffffffffffffffffffffffffffffff6100ea366101c7565b9116825281855277ffffffffffffffffffffffffffffffffffffffffffffffff83832091168252845220549051908152f35b50346100be5760206003193601126100be5760043577ffffffffffffffffffffffffffffffffffffffffffffffff81168091036101c35733835282602052818320908352602052812080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff811461019657600101905580f35b6024837f4e487b710000000000000000000000000000000000000000000000000000000081526011600452fd5b8280fd5b600319604091011261021b5760043573ffffffffffffffffffffffffffffffffffffffff8116810361021b579060243577ffffffffffffffffffffffffffffffffffffffffffffffff8116810361021b5790565b600080fdfea2646970667358221220cfb9d68786d255205372fb87004e3328d3ea605489f8019a98a5c6f8a310a4c564736f6c63430008180033",
+  "deployedBytecode": "0x604060808152600436101561001357600080fd5b600090813560e01c80630bd28e3b1461011c5780631b2e01b8146100c2576335567e1a1461004057600080fd5b346100be5773ffffffffffffffffffffffffffffffffffffffff7fffffffffffffffffffffffffffffffffffffffffffffffff000000000000000082602094610088366101c7565b9416815280865281812077ffffffffffffffffffffffffffffffffffffffffffffffff8516825286522054918351931b16178152f35b5080fd5b50346100be578060209273ffffffffffffffffffffffffffffffffffffffff6100ea366101c7565b9116825281855277ffffffffffffffffffffffffffffffffffffffffffffffff83832091168252845220549051908152f35b50346100be5760206003193601126100be5760043577ffffffffffffffffffffffffffffffffffffffffffffffff81168091036101c35733835282602052818320908352602052812080547fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff811461019657600101905580f35b6024837f4e487b710000000000000000000000000000000000000000000000000000000081526011600452fd5b8280fd5b600319604091011261021b5760043573ffffffffffffffffffffffffffffffffffffffff8116810361021b579060243577ffffffffffffffffffffffffffffffffffffffffffffffff8116810361021b5790565b600080fdfea2646970667358221220cfb9d68786d255205372fb87004e3328d3ea605489f8019a98a5c6f8a310a4c564736f6c63430008180033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

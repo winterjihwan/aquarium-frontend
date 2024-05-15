@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { createContext, useContext, useEffect, useState } from "react";
 import { Address, Hex, zeroAddress } from "viem";
 import { WebAuthn } from "../../libs/web-authn/service/web-authn";
@@ -39,6 +38,8 @@ function useMeHook() {
         id: credential.rawId,
         pubKey: credential.pubKey,
       });
+
+      console.log(`user saved: ${user.account}`);
 
       const me = {
         keyId: user.id as Hex,

@@ -4,7 +4,7 @@ import React, { useState } from "react";
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
-  const { create, get, returning, isLoading } = useMe();
+  const { create, get, isLoading, returning } = useMe();
   const [createForm, setCreateForm] = useState(!returning);
 
   return (

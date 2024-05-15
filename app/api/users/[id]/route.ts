@@ -1,12 +1,12 @@
 import { ethers } from "ethers";
-import { abi as FACTORY_ABI } from "@/constants/artifacts/AccountFactory.json";
+import { abi as FACTORY__ABI } from "@/constants/artifacts/contracts/AccountFactory.sol/AccountFactory.json";
 
 const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
 
 // Define the factory contract instance
 const AccountFactory = new ethers.Contract(
   process.env.FACTORY__ADDRESS as string,
-  FACTORY_ABI,
+  FACTORY__ABI,
   provider
 );
 

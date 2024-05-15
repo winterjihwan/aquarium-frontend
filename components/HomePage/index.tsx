@@ -1,15 +1,17 @@
-import React from "react";
-import { useMe } from "../../providers/MeProvider";
-import LoginPage from "../LoginPage";
+"use client";
 
-const HomePage = () => {
+import { useMe } from "@/providers/MeProvider";
+import LoginPage from "../LoginPage";
+import ShowCase from "../ShowCase";
+
+export default function HomePage() {
   const { me, isMounted } = useMe();
 
+  if (!isMounted) return null;
+
   if (me) {
-    return <div>HomePage</div>;
+    return <ShowCase />;
   } else {
     return <LoginPage />;
   }
-};
-
-export default HomePage;
+}
