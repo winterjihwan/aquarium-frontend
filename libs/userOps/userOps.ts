@@ -7,8 +7,6 @@ import { UserOpSig } from "../userOpsSignature/signature"
 import { Contract } from "ethers"
 import { Address, encodePacked, toHex } from "viem"
 import {
-  ACCOUNT_NATIVE__ADDRESS,
-  ACCOUNT_DESTINATION__ADDRESS,
   Creator__ADDRESS,
   AF_ETH_ADDRESS,
   EP_ETH_ADDRESS,
@@ -62,6 +60,32 @@ const acquireSig = async (userOpHash: any, keyId: any) => {
   return signature
 }
 
+export const buildAquariumInitializeCallData = (
+  id: string,
+  publicKey: { x: string; y: string },
+  address: string
+) => {
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
+
+  const AccountNative = new ethers.Contract(
+    address,
+    AN__ABI,
+    provider
+  ) as Contract
+
+  const AquariumInitializeCallData =
+    AccountNative.interface.encodeFunctionData("initializeAquarium")
+
+  console.log({ AquariumInitializeCallData })
+
+  createUserOp(
+    id,
+    [publicKey.x, publicKey.y] as [string, string],
+    address,
+    AquariumInitializeCallData
+  )
+}
+
 export const buildAAInitializeDestinationCallData = (
   id: string,
   publicKey: { x: string; y: string },
@@ -70,7 +94,7 @@ export const buildAAInitializeDestinationCallData = (
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
 
   const AccountNative = new ethers.Contract(
-    ACCOUNT_NATIVE__ADDRESS,
+    address,
     AN__ABI,
     provider
   ) as Contract
@@ -99,6 +123,7 @@ export const buildTransferSeedCallData = (
   id: string,
   publicKey: { x: string; y: string },
   address: string,
+  addressDestination: string,
   native_token1: string,
   native_token2: string,
   destination_token1: string,
@@ -107,7 +132,7 @@ export const buildTransferSeedCallData = (
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
 
   const AccountNative = new ethers.Contract(
-    ACCOUNT_NATIVE__ADDRESS,
+    address,
     AN__ABI,
     provider
   ) as Contract
@@ -119,7 +144,7 @@ export const buildTransferSeedCallData = (
     "incubate",
     [
       ARBCHAIN,
-      ACCOUNT_DESTINATION__ADDRESS,
+      addressDestination,
       USDC__ADDRESS,
       native_token1,
       native_token2,
@@ -167,7 +192,7 @@ export const createUserOp = async (
     provider
   ) as Contract
   const AccountNative = new ethers.Contract(
-    ACCOUNT_NATIVE__ADDRESS,
+    address,
     AN__ABI,
     provider
   ) as Contract
