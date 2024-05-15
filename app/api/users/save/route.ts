@@ -40,7 +40,10 @@ export async function POST(req: Request) {
   const createdUser = {
     id,
     account: smartWalletAddress,
-    pubKey,
+    pubKey: {
+      x: pubKey[0],
+      y: pubKey[1],
+    },
   };
 
   return Response.json(createdUser);

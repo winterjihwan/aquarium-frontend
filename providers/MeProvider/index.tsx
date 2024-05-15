@@ -72,7 +72,11 @@ function useMeHook() {
       if (!credential) {
         return;
       }
+
+      console.log(`GET- credential found: ${credential}`);
+
       const user = await getUser(credential.rawId);
+      console.log(`GET- user found: ${user}`);
 
       if (user?.account === undefined || user?.account === zeroAddress) {
         throw new Error("user not found");
@@ -84,12 +88,12 @@ function useMeHook() {
         account: user.account,
       };
 
-      localStorage.setItem("passkeys4337.me", JSON.stringify(me));
-      localStorage.setItem("passkeys4337.returning", "true");
+      localStorage.setItem("aquarium-user", JSON.stringify(me));
+      localStorage.setItem("aquarium-returning", "true");
       setIsReturning(true);
       setMe(me);
     } catch (e) {
-      localStorage.removeItem("passkeys4337.returning");
+      localStorage.removeItem("aquarium-returning");
       disconnect();
       console.error(e);
     } finally {
@@ -98,8 +102,8 @@ function useMeHook() {
   }
 
   useEffect(() => {
-    const me = localStorage.getItem("passkeys4337.me");
-    const returning = localStorage.getItem("passkeys4337.returning");
+    const me = localStorage.getItem("aquarium-user");
+    const returning = localStorage.getItem("aquarium-returning");
     if (me) {
       try {
         setMe(JSON.parse(me));

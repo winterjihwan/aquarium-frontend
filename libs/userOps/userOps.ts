@@ -9,21 +9,13 @@ import { Address, encodePacked, toHex } from "viem";
 
 // public key = 0x10F8BBF39357b5b1Ee82F0C7Bf9d82371df2a1Ff
 
-// [ P256 ID and Public Key ]
-// const keyId =
-//   "0xb11b11a6ec47dc55a7e3e3cd2ee334dcebe844209568be79c7e6e3deab572bf2";
-// const publicKey = {
-//   x: "0xe77fa4d6e9c39aedb00d4ea8113fd9a7183a683034cad7f80489cf64d8a10c02",
-//   y: "0x1f31056eb9d7bbda0f6b888fc90563a2474f3cbf7ab339f23d2eb64cb5c88220",
-// };
-
 // [ Account Native / Destination ]
 const ACCOUNT_NATIVE__ADDRESS = "0x805fcc76e329f13188df4298588e32abd325fd90";
 const ACCOUNT_DESTINATION__ADDRESS =
   "0xF2BDEBB36eE1D1B5184423765D9Ca2452DC96b05";
 
 // NEW - arb
-const Creator__ADDRESS = "0x4b377f7fe6206c305765b10Ae504B6f091396710";
+const Creator__ADDRESS = "0x3c160a8b39419DeE194526F4896902ff37A66de4";
 
 // AA constants
 const AF_ETH_ADDRESS = "0xe43e452950aA6fD3CF342cd9cf0AE2C8968DA849";
@@ -98,7 +90,7 @@ const acquireSig = async (userOpHash: any, keyId: any) => {
 
 export const buildAAInitializeDestinationCallData = (
   id: string,
-  publicKey: [string, string] | { x: string; y: string },
+  publicKey: { x: string; y: string },
   address: string
 ) => {
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string);
@@ -123,7 +115,7 @@ export const buildAAInitializeDestinationCallData = (
 
   createUserOp(
     id,
-    publicKey as [string, string],
+    [publicKey.x, publicKey.y] as [string, string],
     address,
     AAInitializeDestinationCallData
   );
@@ -133,7 +125,7 @@ export const createUserOp = async (
   id: string,
   publicKey: [string, string],
   address: string,
-  inputCallData: string
+  inputCallData: any
 ) => {
   const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL);
   const wallet = new ethers.Wallet(
@@ -260,8 +252,8 @@ export const createUserOp = async (
 
   //   userOp manual input---------------------------
   const preVerficationGas = 100000;
-  const verificationGasLimit = 300000;
-  const callGasLimit = 300000;
+  const verificationGasLimit = 600000;
+  const callGasLimit = 600000;
   userOp.preVerificationGas = "0x" + preVerficationGas.toString(16);
   userOp.verificationGasLimit = "0x" + verificationGasLimit.toString(16);
   userOp.callGasLimit = "0x" + callGasLimit.toString(16);
@@ -278,6 +270,8 @@ export const createUserOp = async (
   const sig = await acquireSig(userOpHash, id);
   userOp.signature = sig;
   console.log({ sig });
+
+  console.log({ userOp });
 
   const opHash = await provider.send("eth_sendUserOperation", [
     userOp,

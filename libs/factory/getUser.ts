@@ -12,12 +12,14 @@ export async function getUser(id: Hex): Promise<User> {
     method: "GET",
   });
 
-  const user = await response.json();
+  let user = await response.json();
+  user = JSON.parse(user);
+
   return {
     id: user.id,
     pubKey: {
-      x: user.publicKey[0],
-      y: user.publicKey[1],
+      x: user.publicKey.x,
+      y: user.publicKey.y,
     },
     account: user.account,
     balance: user.balance,
