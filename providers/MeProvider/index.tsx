@@ -1,121 +1,123 @@
-"use client";
+"use client"
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { Address, Hex, zeroAddress } from "viem";
-import { WebAuthn } from "../../libs/web-authn/service/web-authn";
-import { saveUser } from "@/libs/factory";
-import { getUser } from "@/libs/factory/getUser";
+import { createContext, useContext, useEffect, useState } from "react"
+import { Address, Hex, zeroAddress } from "viem"
+import { WebAuthn } from "../../libs/web-authn/service/web-authn"
+import { saveUser } from "@/libs/factory"
+import { getUser } from "@/libs/factory/getUser"
 
 export type Me = {
-  account: Address;
-  keyId: Hex;
+  account: Address
+  keyId: Hex
   pubKey: {
-    x: Hex;
-    y: Hex;
-  };
-};
+    x: Hex
+    y: Hex
+  }
+}
 
 function useMeHook() {
-  const [isLoading, setIsLoading] = useState(false);
-  const [me, setMe] = useState<Me | null>();
-  const [isReturning, setIsReturning] = useState(false);
-  const [isMounted, setIsMounted] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
+  const [me, setMe] = useState<Me | null>()
+  const [isReturning, setIsReturning] = useState(false)
+  const [isMounted, setIsMounted] = useState(false)
 
   function disconnect() {
-    localStorage.removeItem("aquarium");
-    setMe(null);
+    localStorage.removeItem("aquarium")
+    setMe(null)
   }
 
   async function create(username: string) {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const credential = await WebAuthn.create({ username });
+      const credential = await WebAuthn.create({ username })
 
       if (!credential) {
-        return;
+        return
       }
       const user = await saveUser({
         id: credential.rawId,
         pubKey: credential.pubKey,
-      });
+      })
 
-      console.log(`user saved: ${user.account}`);
+      console.log(`user saved: ${user.account}`)
 
       const me = {
         keyId: user.id as Hex,
         pubKey: user.pubKey,
         account: user.account,
-      };
+      }
 
-      console.log("credential id", credential.rawId);
-      console.log("credential pubKey", credential.pubKey);
+      console.log("credential id", credential.rawId)
+      console.log("credential pubKey", credential.pubKey)
 
       if (me === undefined) {
-        console.log("error while saving user");
-        return;
+        console.log("error while saving user")
+        return
       }
-      localStorage.setItem("aquarium-user", JSON.stringify(me));
-      localStorage.setItem("aquarium-returning", "true");
-      setIsReturning(true);
-      setMe(me);
+      localStorage.setItem("aquarium-user", JSON.stringify(me))
+      localStorage.setItem("aquarium-returning", "true")
+      setIsReturning(true)
+      setMe(me)
     } catch (e) {
-      console.error(e);
+      console.error(e)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   async function get() {
-    setIsLoading(true);
+    setIsLoading(true)
     try {
-      const credential = await WebAuthn.get();
+      const credential = await WebAuthn.get()
       if (!credential) {
-        return;
+        return
       }
 
-      console.log(`GET- credential found: ${credential}`);
+      console.log(`GET- credential found: ${credential}`)
 
-      const user = await getUser(credential.rawId);
-      console.log(`GET- user found: ${user}`);
+      const user = await getUser(credential.rawId)
+      console.log(`GET- user found: ${user}`)
+      console.log(`GET- user credential rawId: ${credential.rawId}`)
+      console.log(`GET- user rawId: ${user.id}`)
 
       if (user?.account === undefined || user?.account === zeroAddress) {
-        throw new Error("user not found");
+        throw new Error("user not found")
       }
 
       const me = {
         keyId: user.id as Hex,
         pubKey: user.pubKey,
         account: user.account,
-      };
+      }
 
-      localStorage.setItem("aquarium-user", JSON.stringify(me));
-      localStorage.setItem("aquarium-returning", "true");
-      setIsReturning(true);
-      setMe(me);
+      localStorage.setItem("aquarium-user", JSON.stringify(me))
+      localStorage.setItem("aquarium-returning", "true")
+      setIsReturning(true)
+      setMe(me)
     } catch (e) {
-      localStorage.removeItem("aquarium-returning");
-      disconnect();
-      console.error(e);
+      localStorage.removeItem("aquarium-returning")
+      disconnect()
+      console.error(e)
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
   useEffect(() => {
-    const me = localStorage.getItem("aquarium-user");
-    const returning = localStorage.getItem("aquarium-returning");
+    const me = localStorage.getItem("aquarium-user")
+    const returning = localStorage.getItem("aquarium-returning")
     if (me) {
       try {
-        setMe(JSON.parse(me));
+        setMe(JSON.parse(me))
       } catch (e) {
-        console.log("error while parsing me");
+        console.log("error while parsing me")
       }
     }
     if (returning === "true") {
-      setIsReturning(true);
+      setIsReturning(true)
     }
-    setIsMounted(true);
-  }, []);
+    setIsMounted(true)
+  }, [])
 
   return {
     isLoading,
@@ -125,22 +127,22 @@ function useMeHook() {
     create,
     get,
     disconnect,
-  };
+  }
 }
 
-type UseMeHook = ReturnType<typeof useMeHook>;
-const MeContext = createContext<UseMeHook | null>(null);
+type UseMeHook = ReturnType<typeof useMeHook>
+const MeContext = createContext<UseMeHook | null>(null)
 
 export const useMe = (): UseMeHook => {
-  const context = useContext(MeContext);
+  const context = useContext(MeContext)
   if (!context) {
-    throw new Error("useMeHook must be used within a MeProvider");
+    throw new Error("useMeHook must be used within a MeProvider")
   }
-  return context;
-};
+  return context
+}
 
 export function MeProvider({ children }: { children: React.ReactNode }) {
-  const hook = useMeHook();
+  const hook = useMeHook()
 
-  return <MeContext.Provider value={hook}>{children}</MeContext.Provider>;
+  return <MeContext.Provider value={hook}>{children}</MeContext.Provider>
 }

@@ -1,30 +1,31 @@
-import { ethers } from "ethers";
-import { abi as FACTORY__ABI } from "@/constants/artifacts/contracts/AccountFactory.sol/AccountFactory.json";
-import { Hex, stringify, toHex } from "viem";
+import { ethers } from "ethers"
+import { abi as FACTORY__ABI } from "@/constants/artifacts/contracts/AccountFactory.sol/AccountFactory.json"
+import { Hex, stringify, toHex } from "viem"
+import { AF_ETH_ADDRESS } from "@/utils/constants"
 
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL);
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL)
 
 // Define the factory contract instance
 const AccountFactory = new ethers.Contract(
-  process.env.FACTORY__ADDRESS as string,
+  AF_ETH_ADDRESS as string,
   FACTORY__ABI,
   provider
-);
+)
 
 export async function GET(_req: Request, { params }: { params: { id: Hex } }) {
-  const { id } = params;
+  const { id } = params
   if (!id) {
-    return Response.json(JSON.parse(stringify({ error: "id is required" })));
+    return Response.json(JSON.parse(stringify({ error: "id is required" })))
   }
-  console.log(`ID: ${id}`);
+  console.log(`ID: ${id}`)
 
-  const userId = BigInt(id);
-  const balance = BigInt(0);
+  const balance = BigInt(0)
 
-  const user = await AccountFactory.getUser(userId);
-  console.log(`User: ${user.id}`);
-  console.log(`User: ${user.account}`);
-  console.log(`User: ${user.publicKey}`);
+  const user = await AccountFactory.getUser(id)
+  console.log(`User: ${user}`)
+  console.log(`User: ${user.id}`)
+  console.log(`User: ${user.account}`)
+  console.log(`User: ${user.publicKey}`)
   // console.log(`typeof user: ${typeof user}`);
   // console.log(`User object parsed: ${user.id}`);
 
@@ -36,8 +37,8 @@ export async function GET(_req: Request, { params }: { params: { id: Hex } }) {
       y: user.publicKey[1],
     },
     balance: user.balance,
-  };
+  }
 
   // return Response.json(JSON.parse(stringify({ ...user, id: userId, balance })));
-  return Response.json(stringify(userObject));
+  return Response.json(stringify(userObject))
 }

@@ -1,12 +1,12 @@
-import { Hex } from "viem";
-import { User } from "./getUser";
+import { Hex } from "viem"
+import { User } from "./getUser"
 
 export async function saveUser({
   id,
   pubKey,
 }: {
-  id: Hex;
-  pubKey: { x: Hex; y: Hex };
+  id: Hex
+  pubKey: { x: Hex; y: Hex }
 }): Promise<Omit<User, "balance">> {
   const response = await fetch("/api/users/save", {
     method: "POST",
@@ -14,9 +14,9 @@ export async function saveUser({
       "Content-Type": "application/json",
     },
     body: JSON.stringify({ id, pubKey: [pubKey.x, pubKey.y] }),
-  });
+  })
 
-  const res: Omit<User, "balance"> = await response.json();
+  const res: Omit<User, "balance"> = await response.json()
 
-  return res;
+  return res
 }

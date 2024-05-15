@@ -1,0 +1,37 @@
+{
+  "_format": "hh-sol-artifact-1",
+  "contractName": "Create2",
+  "sourceName": "@openzeppelin/contracts/utils/Create2.sol",
+  "abi": [
+    {
+      "inputs": [],
+      "name": "Create2EmptyBytecode",
+      "type": "error"
+    },
+    {
+      "inputs": [],
+      "name": "Create2FailedDeployment",
+      "type": "error"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "balance",
+          "type": "uint256"
+        },
+        {
+          "internalType": "uint256",
+          "name": "needed",
+          "type": "uint256"
+        }
+      ],
+      "name": "Create2InsufficientBalance",
+      "type": "error"
+    }
+  ],
+  "bytecode": "0x60808060405234601757603a9081601d823930815050f35b600080fdfe600080fdfea2646970667358221220f7ba516481ff0f77dfc5cf1c1c11ca02375657cc90f6fb07eedb882b7d29c05764736f6c63430008180033",
+  "deployedBytecode": "0x600080fdfea2646970667358221220f7ba516481ff0f77dfc5cf1c1c11ca02375657cc90f6fb07eedb882b7d29c05764736f6c63430008180033",
+  "linkReferences": {},
+  "deployedLinkReferences": {}
+}

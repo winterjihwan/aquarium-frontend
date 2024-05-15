@@ -15,20 +15,22 @@ import {
   encodeAbiParameters,
   Address,
   zeroAddress,
-} from "viem";
-import { P256Credential, WebAuthn } from "../web-authn";
+} from "viem"
+import { P256Credential, WebAuthn } from "../web-authn"
 
 export class UserOpSig {
   public async getSignature(msgToSign: Hex, keyId: Hex): Promise<Hex> {
     const credentials: P256Credential = (await WebAuthn.get(
       msgToSign
-    )) as P256Credential;
-    console.log("credentials", credentials);
+    )) as P256Credential
+    console.log("credentials", credentials)
+    console.log("keyId", keyId)
+    console.log("credentials.rawId", credentials.rawId)
 
     if (credentials.rawId !== keyId) {
       throw new Error(
         "Incorrect passkeys used for tx signing. Please sign the transaction with the correct logged-in account"
-      );
+      )
     }
 
     const signature = encodePacked(
@@ -81,13 +83,13 @@ export class UserOpSig {
           ]
         ),
       ]
-    );
-    console.log(`authenticatorData: ${credentials.authenticatorData}`);
-    console.log(`clientDataJSON: ${JSON.stringify(credentials.clientData)}`);
-    console.log(`challengeLocation: ${BigInt(23)}`);
-    console.log(`responseTypeLocation: ${BigInt(1)}`);
-    console.log(`r: ${credentials.signature.r}`);
-    console.log(`s: ${credentials.signature.s}`);
+    )
+    console.log(`authenticatorData: ${credentials.authenticatorData}`)
+    console.log(`clientDataJSON: ${JSON.stringify(credentials.clientData)}`)
+    console.log(`challengeLocation: ${BigInt(23)}`)
+    console.log(`responseTypeLocation: ${BigInt(1)}`)
+    console.log(`r: ${credentials.signature.r}`)
+    console.log(`s: ${credentials.signature.s}`)
     console.log(
       "encoded signature: ",
       encodeAbiParameters(
@@ -134,8 +136,8 @@ export class UserOpSig {
           },
         ]
       )
-    );
+    )
 
-    return signature;
+    return signature
   }
 }
