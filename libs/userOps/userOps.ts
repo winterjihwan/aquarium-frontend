@@ -121,6 +121,58 @@ export const buildAAInitializeDestinationCallData = (
   );
 };
 
+export const buildTransferSeedCallData = (
+  id: string,
+  publicKey: { x: string; y: string },
+  address: string,
+  native_token1: string,
+  native_token2: string,
+  destination_token1: string,
+  destination_token2: string
+) => {
+  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string);
+
+  const AccountNative = new ethers.Contract(
+    ACCOUNT_NATIVE__ADDRESS,
+    AN__ABI,
+    provider
+  ) as Contract;
+
+  const initialValue = ethers.parseEther("0.1");
+  const deadline = Math.floor(Date.now() / 1000) + 60 * 5;
+
+  const transferSeedCallData = AccountNative.interface.encodeFunctionData(
+    "incubate",
+    [
+      ARBCHAIN,
+      ACCOUNT_DESTINATION__ADDRESS,
+      USDC__ADDRESS,
+      native_token1,
+      native_token2,
+      destination_token1,
+      destination_token2,
+      initialValue,
+      deadline,
+      PM_ETH_ADDRESS,
+    ]
+  );
+
+  console.log({
+    native_token1,
+    native_token2,
+    destination_token1,
+    destination_token2,
+    transferSeedCallData,
+  });
+
+  createUserOp(
+    id,
+    [publicKey.x, publicKey.y] as [string, string],
+    address,
+    transferSeedCallData
+  );
+};
+
 export const createUserOp = async (
   id: string,
   publicKey: [string, string],

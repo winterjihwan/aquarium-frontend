@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-
-interface TabsProps {
-  isTab2Locked: boolean;
-}
+import TabContent from "./TabContent";
+import SelectedSeeds from "./SelectedSeeds";
+import TabButtons from "./TabButtons";
+import { seeds } from "./seeds"; // Import the seeds data
 
 const Tabs = () => {
   const [activeTab, setActiveTab] = useState("tab1");
   const [message, setMessage] = useState("");
+  const [clickedSeeds, setClickedSeeds] = useState<string[]>([]);
   const [isTab2Locked, setIsTab2Locked] = useState(false);
 
   const handleTabClick = (tab: string) => {
@@ -18,55 +19,44 @@ const Tabs = () => {
     }
   };
 
+  const handleSeedClick = (seed: string) => {
+    const [name, tab] = seed.split("_tab");
+    const tabSeeds = clickedSeeds.filter((s) => !s.includes(`_tab${tab}`));
+
+    if (clickedSeeds.includes(seed)) {
+      setClickedSeeds(tabSeeds);
+    } else {
+      setClickedSeeds([...tabSeeds, seed]);
+    }
+  };
+
   return (
-    <div className="w-64 h-96 bg-white shadow">
-      {/* Tabs */}
-      <div className="flex border-b border-gray-200">
-        <button
-          className={`flex-1 py-2 text-center border-b-2 ${
-            activeTab === "tab1"
-              ? "border-blue-500 text-blue-500"
-              : "border-transparent text-gray-500"
-          }`}
-          onClick={() => handleTabClick("tab1")}
-        >
-          Aquarium One
-        </button>
-        <button
-          className={`flex-1 py-2 text-center border-b-2 ${
-            activeTab === "tab2"
-              ? "border-blue-500 text-blue-500"
-              : "border-transparent text-gray-500"
-          }`}
-          onClick={() => handleTabClick("tab2")}
-        >
-          Aquarium Two
-        </button>
+    <div>
+      <div className="w-64 h-96 bg-white shadow">
+        <TabButtons activeTab={activeTab} handleTabClick={handleTabClick} />
+
+        <div className="p-4">
+          {activeTab === "tab1" && (
+            <TabContent
+              seeds={seeds.tab1}
+              activeTab={activeTab}
+              clickedSeeds={clickedSeeds}
+              handleSeedClick={handleSeedClick}
+            />
+          )}
+          {activeTab === "tab2" && (
+            <TabContent
+              seeds={seeds.tab2}
+              activeTab={activeTab}
+              clickedSeeds={clickedSeeds}
+              handleSeedClick={handleSeedClick}
+            />
+          )}
+          {message && <div className="text-red-500 mt-2">{message}</div>}
+        </div>
       </div>
-      {/* Tab Contents */}
-      <div className="p-4">
-        {activeTab === "tab1" && (
-          <div>
-            {/* Content for Tab 1 */}
-            <div>Select pools you'd like to invest</div>
-            <div className="mt-4 space-x-2">
-              <button className="px-4 py-2">Seed1</button>
-              <button className="px-4 py-2">Seed2</button>
-            </div>
-          </div>
-        )}
-        {activeTab === "tab2" && (
-          <div>
-            {/* Content for Tab 2 */}
-            <div>Select pools you'd like to invest</div>
-            <div className="mt-4 space-x-2">
-              <button className="px-4 py-2">Seed1</button>
-              <button className="px-4 py-2">Seed2</button>
-            </div>
-          </div>
-        )}
-        {message && <div className="text-red-500 mt-2">{message}</div>}
-      </div>
+
+      <SelectedSeeds clickedSeeds={clickedSeeds} seeds={seeds} />
     </div>
   );
 };
