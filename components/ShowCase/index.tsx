@@ -1,54 +1,43 @@
-// components/ShowCase.tsx
-
-import React, { useEffect, useState } from "react"
+import React, { useState, useCallback, useEffect } from "react"
 import { useMe } from "@/providers/MeProvider"
 import Tabs from "../Tabs"
 import Header from "../Header"
 import AquariumAdd from "../AquariumAdd"
-import { listenToCreatorCreation } from "@/libs/creator"
-import { fetchAquariums } from "@/libs/aquarium/fetchAquarium"
 import AquariumList from "@/components/AquariumList"
 import {
   buildAAInitializeDestinationCallData,
   buildAquariumInitializeCallData,
 } from "@/libs/userOps"
+import { useAquariums, useStakedPools } from "@/hooks/useAquarium"
+import { listenToCreatorCreation } from "@/libs/creator"
 
 const ShowCase = () => {
   const { me, isMounted, disconnect } = useMe()
   const [accounts, setAccounts] = useState<string[]>([])
-  const [aquariums, setAquariums] = useState<string[]>([])
 
-  const addAquarium = async () => {
+  const handleAccountCreated = useCallback((account: string) => {
+    setAccounts((prevAccounts) => [...prevAccounts, account])
+    console.log(`New account created: ${account}`)
+  }, [])
+
+  useEffect(() => {
+    listenToCreatorCreation()
+  }, [])
+
+  const aquariums = useAquariums(me?.account)
+  const stakedPools = useStakedPools(aquariums, me?.account)
+
+  const handleAddAquarium = async () => {
     console.log(
       `Handle add aquarium, me: ${me?.keyId}, ${me?.pubKey!}, ${me?.account!}`
     )
     buildAAInitializeDestinationCallData(me?.keyId!, me?.pubKey!, me?.account!)
   }
 
-  const initializeAquarium = async () => {
+  const handleInitializeAquarium = async () => {
     if (!me?.account) return
-
     buildAquariumInitializeCallData(me.keyId, me.pubKey!, me.account)
   }
-
-  useEffect(() => {
-    const handleCreatedAccount = (account: string) => {
-      setAccounts((prevAccounts) => [...prevAccounts, account])
-      console.log(`New account created: ${account}`)
-    }
-
-    listenToCreatorCreation()
-  }, [])
-
-  useEffect(() => {
-    if (me?.account) {
-      fetchAquariums(me.account)
-        .then((aquariums: any) => setAquariums(aquariums))
-        .catch((error: any) =>
-          console.error("Error fetching aquariums:", error)
-        )
-    }
-  }, [me?.account])
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
@@ -58,10 +47,11 @@ const ShowCase = () => {
         <div className="flex flex-col items-center">
           <AquariumList
             aquariums={aquariums}
-            initializeAquarium={initializeAquarium}
+            stakedPools={stakedPools}
+            initializeAquarium={handleInitializeAquarium}
           />
         </div>
-        <AquariumAdd onClick={addAquarium} />
+        <AquariumAdd onClick={handleAddAquarium} />
       </div>
     </div>
   )
