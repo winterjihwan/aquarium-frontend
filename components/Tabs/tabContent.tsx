@@ -1,22 +1,17 @@
-import React from "react";
-import SeedButton from "./SeedButton";
+import React from "react"
+import SeedButton from "./seedButton"
 
 interface TabContentProps {
-  seeds: { name: string; addresses: string[] }[];
-  activeTab: string;
-  clickedSeeds: string[];
-  handleSeedClick: (seed: string) => void;
+  seeds: { name: string; addresses: string[] }[]
+  activeTab: string
+  clickedSeeds: string[]
+  handleSeedClick: (seed: string) => void
 }
 
-const TabContent: React.FC<TabContentProps> = ({
-  seeds,
-  activeTab,
-  clickedSeeds,
-  handleSeedClick,
-}) => {
+const TabContent: React.FC<TabContentProps> = ({ seeds, activeTab, clickedSeeds, handleSeedClick }) => {
   return (
     <div>
-      <div>Select pools you'd like to invest</div>
+      <div>Select fish you'd like to incubate</div>
       <div className="mt-4 space-x-2">
         {seeds.map((seed) => (
           <SeedButton
@@ -28,7 +23,7 @@ const TabContent: React.FC<TabContentProps> = ({
         ))}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default TabContent;
+export default TabContent

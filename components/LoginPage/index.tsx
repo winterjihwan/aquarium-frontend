@@ -1,23 +1,23 @@
-"use client";
-import { useMe } from "@/providers/MeProvider";
-import React, { useState } from "react";
+"use client"
+import { useMe } from "@/providers/MeProvider"
+import React, { useState } from "react"
 
 const LoginPage = () => {
-  const [username, setUsername] = useState("");
-  const { create, get, isLoading, returning } = useMe();
-  const [createForm, setCreateForm] = useState(!returning);
+  const [username, setUsername] = useState("")
+  const { create, get, isLoading, returning } = useMe()
+  const [createForm, setCreateForm] = useState(!returning)
 
   return (
-    <div className="flex flex-col items-center justify-between w-full relative gap-8">
+    <div className="flex flex-col items-center justify-center w-full h-screen gap-8">
       {!isLoading && (
         <form
           className="flex flex-col items-center w-full gap-4"
           onSubmit={(e) => {
-            e.preventDefault();
+            e.preventDefault()
             if (createForm) {
-              username && create(username);
+              username && create(username)
             } else {
-              get();
+              get()
             }
           }}
         >
@@ -31,10 +31,7 @@ const LoginPage = () => {
                 disabled={isLoading}
                 className="p-2 border rounded w-full"
               />
-              <button
-                className="w-28 text-center border rounded p-2"
-                type="submit"
-              >
+              <button className="w-28 text-center border rounded p-2" type="submit">
                 CREATE
               </button>
             </div>
@@ -47,26 +44,20 @@ const LoginPage = () => {
         </form>
       )}
 
-      <div className="flex w-full justify-end whitespace-nowrap">
+      <div className="flex w-full justify-center whitespace-nowrap">
         {!createForm && !isLoading && (
-          <button
-            onClick={() => !isLoading && setCreateForm(true)}
-            className="text-sm text-blue-500 underline"
-          >
+          <button onClick={() => !isLoading && setCreateForm(true)} className="text-sm text-blue-500 underline">
             or create a new wallet
           </button>
         )}
         {createForm && !isLoading && (
-          <button
-            onClick={() => !isLoading && setCreateForm(false)}
-            className="text-sm text-blue-500 underline"
-          >
+          <button onClick={() => !isLoading && setCreateForm(false)} className="text-sm text-blue-500 underline">
             or log in with an existing passkey
           </button>
         )}
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default LoginPage;
+export default LoginPage

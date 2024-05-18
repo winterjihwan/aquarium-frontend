@@ -129,7 +129,9 @@ export const buildTransferSeedCallData = (
   destination_token1: string,
   destination_token2: string
 ) => {
-  const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
+  const provider = new ethers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL as string
+  )
 
   const AccountNative = new ethers.Contract(
     address,
@@ -162,6 +164,8 @@ export const buildTransferSeedCallData = (
     destination_token1,
     destination_token2,
     transferSeedCallData,
+    address,
+    addressDestination,
   })
 
   createUserOp(
@@ -169,6 +173,51 @@ export const buildTransferSeedCallData = (
     [publicKey.x, publicKey.y] as [string, string],
     address,
     transferSeedCallData
+  )
+}
+
+export const buildCallIncubateCallData = (
+  id: string,
+  publicKey: { x: string; y: string },
+  address: string,
+  addressDestination: string,
+  destination_token1: string,
+  destination_token2: string
+) => {
+  const provider = new ethers.JsonRpcProvider(
+    process.env.NEXT_PUBLIC_RPC_URL as string
+  )
+
+  const AccountNative = new ethers.Contract(
+    address,
+    AN__ABI,
+    provider
+  ) as Contract
+
+  const callIncubateCallData = AccountNative.interface.encodeFunctionData(
+    "incubateDestination",
+    [
+      ARBCHAIN,
+      addressDestination,
+      destination_token1,
+      destination_token2,
+      PM_ETH_ADDRESS,
+    ]
+  )
+
+  console.log({
+    destination_token1,
+    destination_token2,
+    callIncubateCallData,
+    address,
+    addressDestination,
+  })
+
+  createUserOp(
+    id,
+    [publicKey.x, publicKey.y] as [string, string],
+    address,
+    callIncubateCallData
   )
 }
 

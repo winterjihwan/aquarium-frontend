@@ -1,34 +1,37 @@
-import React, { useState } from "react";
-import TabContent from "./TabContent";
-import SelectedSeeds from "./SelectedSeeds";
-import TabButtons from "./TabButtons";
-import { seeds } from "./seeds"; // Import the seeds data
+import React, { useState } from "react"
+import TabContent from "./tabContent"
+import SelectedSeeds from "./selectedSeeds"
+import TabButtons from "./tabButtons"
+import { seeds } from "./seeds" // Import the seeds data
 
-const Tabs = () => {
-  const [activeTab, setActiveTab] = useState("tab1");
-  const [message, setMessage] = useState("");
-  const [clickedSeeds, setClickedSeeds] = useState<string[]>([]);
-  const [isTab2Locked, setIsTab2Locked] = useState(false);
+interface TabsProps {
+  isTab2Locked: boolean
+}
+
+const Tabs: React.FC<TabsProps> = ({ isTab2Locked }) => {
+  const [activeTab, setActiveTab] = useState("tab1")
+  const [message, setMessage] = useState("")
+  const [clickedSeeds, setClickedSeeds] = useState<string[]>([])
 
   const handleTabClick = (tab: string) => {
     if (tab === "tab2" && isTab2Locked) {
-      setMessage("Locked... need to unlock a new aquarium");
+      setMessage("Locked... need to unlock a new aquarium")
     } else {
-      setActiveTab(tab);
-      setMessage("");
+      setActiveTab(tab)
+      setMessage("")
     }
-  };
+  }
 
   const handleSeedClick = (seed: string) => {
-    const [name, tab] = seed.split("_tab");
-    const tabSeeds = clickedSeeds.filter((s) => !s.includes(`_tab${tab}`));
+    const [name, tab] = seed.split("_tab")
+    const tabSeeds = clickedSeeds.filter((s) => !s.includes(`_tab${tab}`))
 
     if (clickedSeeds.includes(seed)) {
-      setClickedSeeds(tabSeeds);
+      setClickedSeeds(tabSeeds)
     } else {
-      setClickedSeeds([...tabSeeds, seed]);
+      setClickedSeeds([...tabSeeds, seed])
     }
-  };
+  }
 
   return (
     <div>
@@ -58,7 +61,7 @@ const Tabs = () => {
 
       <SelectedSeeds clickedSeeds={clickedSeeds} seeds={seeds} />
     </div>
-  );
-};
+  )
+}
 
-export default Tabs;
+export default Tabs
