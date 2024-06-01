@@ -1,7 +1,4 @@
-import {
-  buildCallIncubateCallData,
-  buildTransferSeedCallData,
-} from "@/libs/userOps"
+import { buildCallIncubateCallData, buildTransferSeedCallData } from "@/libs/userOps"
 import { useMe } from "@/providers/MeProvider"
 import React, { useEffect, useState } from "react"
 import EthBalance from "./ethBalance"
@@ -16,13 +13,12 @@ interface SelectedSeedsProps {
   }
 }
 
-const SelectedSeeds: React.FC<SelectedSeedsProps> = ({
-  clickedSeeds,
-  seeds,
-}) => {
+const SelectedSeeds: React.FC<SelectedSeedsProps> = ({ clickedSeeds, seeds }) => {
   const { me } = useMe()
   const [balance, setBalance] = useState<number>(0)
   const [accountDestination, setAccountDestination] = useState<string>("")
+  const [loading, setLoading] = useState<boolean>(false)
+  const [showSecondButton, setShowSecondButton] = useState<boolean>(false)
 
   const handleIncubate = () => {
     console.log(`Clicked Seeds: ${clickedSeeds}`)
@@ -38,15 +34,13 @@ const SelectedSeeds: React.FC<SelectedSeedsProps> = ({
     _handleIncubate(addresses)
   }
 
-  const delay = (ms: number) =>
-    new Promise((resolve) => setTimeout(resolve, ms))
-
   const _handleIncubate = async (seeds: string[]) => {
     try {
       const accounts = await fetchLC(me?.account!)
       setAccountDestination(accounts[0])
       console.log("Fetched logically connected accounts:", accounts)
 
+      setLoading(true)
       buildTransferSeedCallData(
         me?.keyId!,
         me?.pubKey!,
@@ -58,18 +52,23 @@ const SelectedSeeds: React.FC<SelectedSeedsProps> = ({
         seeds[3]
       )
 
-      await delay(15000)
+      setTimeout(() => {
+        setLoading(false)
+        setShowSecondButton(true)
+      }, 20000)
+    } catch (error) {
+      console.error("Error:", error)
+      setLoading(false)
+    }
+  }
 
-      buildCallIncubateCallData(
-        me?.keyId!,
-        me?.pubKey!,
-        me?.account!,
-        accounts[0],
-        seeds[2],
-        seeds[3]
-      )
+  const handleCallIncubate = async (seeds: string[]) => {
+    try {
+      buildCallIncubateCallData(me?.keyId!, me?.pubKey!, me?.account!, accountDestination, seeds[2], seeds[3])
 
-      accountDestinationStakePoolEventListener(accounts[0], me?.account!)
+      setTimeout(() => {
+        setShowSecondButton(false)
+      }, 5000)
     } catch (error) {
       console.error("Error:", error)
     }
@@ -98,17 +97,33 @@ const SelectedSeeds: React.FC<SelectedSeedsProps> = ({
           )}
         </div>
         <button
-          className={`mt-4 px-4 py-2 rounded ${
-            balance >= 0.1
-              ? "bg-blue-500 text-white"
-              : // : "bg-gray-500 text-white cursor-not-allowed"
-                "bg-gray-500 text-white"
-          }`}
-          onClick={balance >= 0.1 ? handleIncubate : handleIncubate}
+          className={`mt-4 px-4 py-2 rounded ${balance >= 0.1 ? "bg-blue-500 text-white" : "bg-gray-500 text-white"}`}
+          onClick={balance >= 0.1 && !loading ? handleIncubate : undefined}
           title={balance < 0.1 ? "Balance is below 0.1 ETH" : ""}
         >
-          Incubate!
+          {loading ? (
+            <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+          ) : (
+            "Incubate!"
+          )}
         </button>
+        {showSecondButton && (
+          <button
+            className="mt-4 px-4 py-2 bg-green-500 text-white rounded"
+            onClick={() =>
+              handleCallIncubate(
+                clickedSeeds.flatMap(
+                  (seed) =>
+                    seeds[`tab${seed.split("_tab")[1]}` as "tab1" | "tab2"].find(
+                      (s) => s.name === seed.split("_tab")[0]
+                    )?.addresses || []
+                )
+              )
+            }
+          >
+            Call Incubate on Arbchain
+          </button>
+        )}
       </div>
     </div>
   )

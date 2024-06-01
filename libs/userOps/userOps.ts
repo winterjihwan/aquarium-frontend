@@ -52,38 +52,21 @@ interface UserOperation {
 
 const userOpSig = new UserOpSig()
 const acquireSig = async (userOpHash: any, keyId: any) => {
-  const msgToSign = encodePacked(
-    ["uint8", "uint48", "bytes32"],
-    [1, 0, userOpHash]
-  )
+  const msgToSign = encodePacked(["uint8", "uint48", "bytes32"], [1, 0, userOpHash])
   const signature = await userOpSig.getSignature(msgToSign, keyId)
   return signature
 }
 
-export const buildAquariumInitializeCallData = (
-  id: string,
-  publicKey: { x: string; y: string },
-  address: string
-) => {
+export const buildAquariumInitializeCallData = (id: string, publicKey: { x: string; y: string }, address: string) => {
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
 
-  const AccountNative = new ethers.Contract(
-    address,
-    AN__ABI,
-    provider
-  ) as Contract
+  const AccountNative = new ethers.Contract(address, AN__ABI, provider) as Contract
 
-  const AquariumInitializeCallData =
-    AccountNative.interface.encodeFunctionData("initializeAquarium")
+  const AquariumInitializeCallData = AccountNative.interface.encodeFunctionData("initializeAquarium")
 
   console.log({ AquariumInitializeCallData })
 
-  createUserOp(
-    id,
-    [publicKey.x, publicKey.y] as [string, string],
-    address,
-    AquariumInitializeCallData
-  )
+  createUserOp(id, [publicKey.x, publicKey.y] as [string, string], address, AquariumInitializeCallData)
 }
 
 export const buildAAInitializeDestinationCallData = (
@@ -93,30 +76,20 @@ export const buildAAInitializeDestinationCallData = (
 ) => {
   const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
 
-  const AccountNative = new ethers.Contract(
-    address,
-    AN__ABI,
-    provider
-  ) as Contract
+  const AccountNative = new ethers.Contract(address, AN__ABI, provider) as Contract
 
-  const AAInitializeDestinationCallData =
-    AccountNative.interface.encodeFunctionData("AAInitializeDestination", [
-      ARBCHAIN,
-      Creator__ADDRESS,
-      AF_ARB_ADDRESS,
-      address,
-      CCIPRouter_ARB__ADDRESS,
-      PM_ETH_ADDRESS,
-    ])
+  const AAInitializeDestinationCallData = AccountNative.interface.encodeFunctionData("AAInitializeDestination", [
+    ARBCHAIN,
+    Creator__ADDRESS,
+    AF_ARB_ADDRESS,
+    address,
+    CCIPRouter_ARB__ADDRESS,
+    PM_ETH_ADDRESS,
+  ])
 
   console.log({ id, publicKey, address, AAInitializeDestinationCallData })
 
-  createUserOp(
-    id,
-    [publicKey.x, publicKey.y] as [string, string],
-    address,
-    AAInitializeDestinationCallData
-  )
+  createUserOp(id, [publicKey.x, publicKey.y] as [string, string], address, AAInitializeDestinationCallData)
 }
 
 export const buildTransferSeedCallData = (
@@ -129,34 +102,25 @@ export const buildTransferSeedCallData = (
   destination_token1: string,
   destination_token2: string
 ) => {
-  const provider = new ethers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_URL as string
-  )
+  const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL as string)
 
-  const AccountNative = new ethers.Contract(
-    address,
-    AN__ABI,
-    provider
-  ) as Contract
+  const AccountNative = new ethers.Contract(address, AN__ABI, provider) as Contract
 
   const initialValue = ethers.parseEther("0.1")
   const deadline = Math.floor(Date.now() / 1000) + 60 * 5
 
-  const transferSeedCallData = AccountNative.interface.encodeFunctionData(
-    "incubate",
-    [
-      ARBCHAIN,
-      addressDestination,
-      USDC__ADDRESS,
-      native_token1,
-      native_token2,
-      destination_token1,
-      destination_token2,
-      initialValue,
-      deadline,
-      PM_ETH_ADDRESS,
-    ]
-  )
+  const transferSeedCallData = AccountNative.interface.encodeFunctionData("incubate", [
+    ARBCHAIN,
+    addressDestination,
+    USDC__ADDRESS,
+    native_token1,
+    native_token2,
+    destination_token1,
+    destination_token2,
+    initialValue,
+    deadline,
+    PM_ETH_ADDRESS,
+  ])
 
   console.log({
     native_token1,
@@ -168,12 +132,7 @@ export const buildTransferSeedCallData = (
     addressDestination,
   })
 
-  createUserOp(
-    id,
-    [publicKey.x, publicKey.y] as [string, string],
-    address,
-    transferSeedCallData
-  )
+  createUserOp(id, [publicKey.x, publicKey.y] as [string, string], address, transferSeedCallData)
 }
 
 export const buildCallIncubateCallData = (
@@ -184,26 +143,17 @@ export const buildCallIncubateCallData = (
   destination_token1: string,
   destination_token2: string
 ) => {
-  const provider = new ethers.JsonRpcProvider(
-    process.env.NEXT_PUBLIC_RPC_URL as string
-  )
+  const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL as string)
 
-  const AccountNative = new ethers.Contract(
-    address,
-    AN__ABI,
-    provider
-  ) as Contract
+  const AccountNative = new ethers.Contract(address, AN__ABI, provider) as Contract
 
-  const callIncubateCallData = AccountNative.interface.encodeFunctionData(
-    "incubateDestination",
-    [
-      ARBCHAIN,
-      addressDestination,
-      destination_token1,
-      destination_token2,
-      PM_ETH_ADDRESS,
-    ]
-  )
+  const callIncubateCallData = AccountNative.interface.encodeFunctionData("incubateDestination", [
+    ARBCHAIN,
+    addressDestination,
+    destination_token1,
+    destination_token2,
+    PM_ETH_ADDRESS,
+  ])
 
   console.log({
     destination_token1,
@@ -213,47 +163,24 @@ export const buildCallIncubateCallData = (
     addressDestination,
   })
 
-  createUserOp(
-    id,
-    [publicKey.x, publicKey.y] as [string, string],
-    address,
-    callIncubateCallData
-  )
+  createUserOp(id, [publicKey.x, publicKey.y] as [string, string], address, callIncubateCallData)
 }
 
-export const createUserOp = async (
-  id: string,
-  publicKey: [string, string],
-  address: string,
-  inputCallData: any
-) => {
+export const createUserOp = async (id: string, publicKey: [string, string], address: string, inputCallData: any) => {
   const provider = new ethers.JsonRpcProvider(process.env.NEXT_PUBLIC_RPC_URL)
-  const wallet = new ethers.Wallet(
-    process.env.NEXT_PUBLIC_PRIVATE_KEY as string,
-    provider
-  )
+  const wallet = new ethers.Wallet(process.env.NEXT_PUBLIC_PRIVATE_KEY as string, provider)
 
   const EntryPoint = new ethers.Contract(EP_ETH_ADDRESS, EP__ABI, wallet)
   const Paymaster = new ethers.Contract(PM_ETH_ADDRESS, PM__ABI, provider)
-  const AccountFactory = new ethers.Contract(
-    AF_ETH_ADDRESS,
-    AF__ABI,
-    provider
-  ) as Contract
-  const AccountNative = new ethers.Contract(
-    address,
-    AN__ABI,
-    provider
-  ) as Contract
+  const AccountFactory = new ethers.Contract(AF_ETH_ADDRESS, AF__ABI, provider) as Contract
+  const AccountNative = new ethers.Contract(address, AN__ABI, provider) as Contract
 
   const signerAddress = address
 
   let initCode =
     AF_ETH_ADDRESS +
     AccountFactory.interface
-      .encodeFunctionData("createAccount", [
-        [publicKey[0], publicKey[1]] as [string, string],
-      ])
+      .encodeFunctionData("createAccount", [[publicKey[0], publicKey[1]] as [string, string]])
       .slice(2)
 
   let sender
@@ -346,8 +273,10 @@ export const createUserOp = async (
   // userOp.callGasLimit = callGasLimit;
 
   // toHex
-  const maxFeePerGas = await provider.getFeeData()
-  userOp.maxFeePerGas = toHex(maxFeePerGas.maxFeePerGas as bigint)
+  // const maxFeePerGas = await provider.getFeeData()
+  // userOp.maxFeePerGas = toHex(maxFeePerGas.maxFeePerGas as bigint)
+  const mfpg = 7536318724
+  userOp.maxFeePerGas = "0x" + mfpg.toString(16)
   // userOp.maxFeePerGas = "0x" + maxFeePerGas!.toString(16);
 
   //   userOp manual input---------------------------
@@ -358,10 +287,7 @@ export const createUserOp = async (
   userOp.verificationGasLimit = "0x" + verificationGasLimit.toString(16)
   userOp.callGasLimit = "0x" + callGasLimit.toString(16)
 
-  const maxPriorityFeePerGas = await provider.send(
-    "rundler_maxPriorityFeePerGas",
-    []
-  )
+  const maxPriorityFeePerGas = await provider.send("rundler_maxPriorityFeePerGas", [])
   userOp.maxPriorityFeePerGas = maxPriorityFeePerGas
 
   const userOpHash = await EntryPoint.getUserOpHash(userOp)
@@ -373,18 +299,12 @@ export const createUserOp = async (
 
   console.log({ userOp })
 
-  const opHash = await provider.send("eth_sendUserOperation", [
-    userOp,
-    EP_ETH_ADDRESS,
-  ])
+  const opHash = await provider.send("eth_sendUserOperation", [userOp, EP_ETH_ADDRESS])
 
   console.log({ opHash })
 
   setTimeout(async () => {
-    const { transactionHash } = await provider.send(
-      "eth_getUserOperationByHash",
-      [opHash]
-    )
+    const { transactionHash } = await provider.send("eth_getUserOperationByHash", [opHash])
 
     console.log({ transactionHash })
   }, 30000)
