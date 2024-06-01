@@ -7,18 +7,12 @@ export async function GET(request: NextRequest) {
   const AN__ADDRESS = searchParams.get("contractAddress")
 
   if (!AN__ADDRESS) {
-    return NextResponse.json(
-      { error: "Contract address is required" },
-      { status: 400 }
-    )
+    return NextResponse.json({ error: "Contract address is required" }, { status: 400 })
   }
 
   try {
     const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
-    const wallet = new ethers.Wallet(
-      process.env.PRIVATE_KEY as string,
-      provider
-    )
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider)
 
     const AN = new ethers.Contract(AN__ADDRESS, AN__ABI, wallet)
 
@@ -27,6 +21,6 @@ export async function GET(request: NextRequest) {
 
     return NextResponse.json({ aquariums }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error }, { status: 500 })
   }
 }

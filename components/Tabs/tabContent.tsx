@@ -11,7 +11,7 @@ interface TabContentProps {
 const TabContent: React.FC<TabContentProps> = ({ seeds, activeTab, clickedSeeds, handleSeedClick }) => {
   return (
     <div>
-      <div>Select fish you'd like to incubate</div>
+      <div>Select fish you would like to incubate</div>
       <div className="mt-4 space-x-2">
         {seeds.map((seed) => (
           <SeedButton

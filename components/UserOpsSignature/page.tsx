@@ -1,37 +1,34 @@
-"use client";
-import React, { useState } from "react";
-import { UserOpSig } from "../../libs/userOpsSignature/signature";
-import { encodePacked } from "viem";
+"use client"
+import React, { useState } from "react"
+import { UserOpSig } from "../../libs/userOpsSignature/signature"
+import { encodePacked } from "viem"
 
-const userOpSig = new UserOpSig();
+const userOpSig = new UserOpSig()
 
-const getSig = async (userOpHash, keyId) => {
+const getSig = async (userOpHash: any, keyId: any) => {
   try {
-    const msgToSign = encodePacked(
-      ["uint8", "uint48", "bytes32"],
-      [1, 0, userOpHash]
-    );
-    const signature = await userOpSig.getSignature(msgToSign, keyId);
-    return signature;
+    const msgToSign = encodePacked(["uint8", "uint48", "bytes32"], [1, 0, userOpHash])
+    const signature = await userOpSig.getSignature(msgToSign, keyId)
+    return signature
   } catch (error) {
-    console.error("Error getting signature:", error);
-    return null;
+    console.error("Error getting signature:", error)
+    return null
   }
-};
+}
 
 const UserOpInit = () => {
-  const [userOpHash, setUserOpHash] = useState("");
-  const [keyId, setKeyId] = useState("");
-  const [signature, setSignature] = useState("");
+  const [userOpHash, setUserOpHash] = useState("")
+  const [keyId, setKeyId] = useState("")
+  const [signature, setSignature] = useState("")
 
   const handleGenerateSignature = async () => {
     if (userOpHash && keyId) {
-      const sig = await getSig(userOpHash, keyId);
-      setSignature(sig!);
+      const sig = await getSig(userOpHash, keyId)
+      setSignature(sig!)
     } else {
-      alert("Please provide both userOpHash and keyId.");
+      alert("Please provide both userOpHash and keyId.")
     }
-  };
+  }
 
   return (
     <div className="flex flex-col items-center p-4">
@@ -50,10 +47,7 @@ const UserOpInit = () => {
         onChange={(e) => setKeyId(e.target.value)}
         className="border p-2 mb-2 w-full max-w-md"
       />
-      <button
-        onClick={handleGenerateSignature}
-        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700"
-      >
+      <button onClick={handleGenerateSignature} className="bg-blue-500 text-white p-2 rounded hover:bg-blue-700">
         Generate Signature
       </button>
       {signature && (
@@ -63,7 +57,7 @@ const UserOpInit = () => {
         </div>
       )}
     </div>
-  );
-};
+  )
+}
 
-export default UserOpInit;
+export default UserOpInit

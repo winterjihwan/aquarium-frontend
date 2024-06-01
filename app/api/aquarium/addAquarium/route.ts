@@ -11,10 +11,7 @@ export async function POST(request: NextRequest) {
 
   try {
     const provider = new ethers.JsonRpcProvider(process.env.RPC_URL as string)
-    const wallet = new ethers.Wallet(
-      process.env.PRIVATE_KEY as string,
-      provider
-    )
+    const wallet = new ethers.Wallet(process.env.PRIVATE_KEY as string, provider)
 
     const AN = new ethers.Contract(AN__ADDRESS, AN__ABI, wallet)
 
@@ -23,6 +20,6 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ success: true }, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 })
+    return NextResponse.json({ error: error }, { status: 500 })
   }
 }
