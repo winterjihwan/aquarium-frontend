@@ -1,7 +1,7 @@
 import React, { Suspense, useState } from "react"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls } from "@react-three/drei"
-import Aq from "@/public/aquarium_v4/aq"
+import Aq from "@/public/aquarium_v4/Aq"
 import Dory from "@/public/fish/Dory"
 import { ClownFish } from "../../public/fish/ClownFish"
 
